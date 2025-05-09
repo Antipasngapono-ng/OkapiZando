@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:okapi_zando_mobile/pages/singin/signinPage.dart';
+import 'package:okapi_zando_mobile/pages/login/loginPage.dart';
 
-class Signup extends StatefulWidget {
-  const Signup({super.key});
+class Signinpage extends StatefulWidget {
+  const Signinpage({super.key});
 
   @override
-  State<Signup> createState() => _SignupState();
+  State<Signinpage> createState() => _SigninpageState();
 }
 
-class _SignupState extends State<Signup> {
+class _SigninpageState extends State<Signinpage> {
   final _formKey = GlobalKey<FormState>();
-  final _passwordController = TextEditingController();
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  final _phoneNumber = TextEditingController();
 
-  // le champ pour cacher le mot de passe
-  var _obscureText = true;
+  // Le champ de mot de passe est masqué par défaut
+  bool _obscurePassword = true;
+
+
 
   bool valeur = false;
   @override
@@ -32,25 +37,56 @@ class _SignupState extends State<Signup> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    'assets/images/Okapizando.png',
-                    width: 300,
-                    height: 200,
-                  ),
+                  Image.asset('assets/images/Okapizando.png', width: 300, height: 200),
                   SizedBox(height: 5),
                   Text(
-                    'Connexion',
-                    style: TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue,
-                    ),
+                    'Inscription',
+                    style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold,color: Colors.blue),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   Form(
                     key: _formKey,
                     child: Column(
                       children: [
+                        TextFormField(
+                          controller: _nameController,
+                          decoration: InputDecoration(
+                            labelText: 'Nom',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Veuillez entrer votre nom';
+                            }
+                            return null;
+                          },
+                        ),
+          
+                        SizedBox(height: 16),
+                        TextFormField(
+                          controller: _phoneNumber,
+                          decoration: InputDecoration(
+                            labelText: 'Numero de telephone',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          keyboardType: TextInputType.phone,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Veuillez entrer votre numero de telephone';
+                            }
+                            // La creation d'une expression regulière pour valider le numero de telephone
+                            final phoneRegex = RegExp(r"^\+?\d{10,15}$");
+                            if (!phoneRegex.hasMatch(value)) {
+                              return 'Veuillez entrer un numero de telephone valide';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: 16),
                         TextFormField(
                           controller: _emailController,
                           decoration: InputDecoration(
@@ -72,26 +108,25 @@ class _SignupState extends State<Signup> {
                             return null;
                           },
                         ),
-
-                        SizedBox(height: 16),
+                        SizedBox(height: 16,),
                         TextFormField(
-                          obscureText: _obscureText,
+                          obscureText: _obscurePassword,
                           controller: _passwordController,
                           decoration: InputDecoration(
-                            labelText: 'Mot de passe',
                             suffixIcon: IconButton(
-                              onPressed: (){
+                              onPressed: () {
                                 setState(() {
-                                  _obscureText = !_obscureText;
+                                  _obscurePassword = !_obscurePassword;
                                 });
                               },
-                              icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
+                              icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility,),
                             ),
+                            labelText: 'Mot de passe',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          
+                          keyboardType: TextInputType.emailAddress,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Veuillez entrer votre mot de passe';
@@ -99,72 +134,56 @@ class _SignupState extends State<Signup> {
                             return null;
                           },
                         ),
-                        SizedBox(height: 32),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  'Se souvenir de moi',
-                                  style: TextStyle(color: Colors.blue),
-                                ),
-                                SizedBox(width: 3),
-                                Checkbox(
-                                  value: valeur,
-                                  onChanged: (abc) {
-                                    setState(() {
-                                      valeur = abc!;
-                                    });
-                                  },
-                                ),
-                              ],
+                        SizedBox(height: 16,),
+                        TextFormField(
+                          obscureText: _obscurePassword,
+                          controller: _confirmPasswordController,
+                          decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _obscurePassword = !_obscurePassword;
+                                });
+                              },
+                              icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility,),
                             ),
-                            TextButton(
-                              style: TextButton.styleFrom(
-                                padding: EdgeInsets.zero,
-                                minimumSize: Size(0,0),
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                visualDensity: VisualDensity.compact
-                              ),
-                              onPressed: () {},
-                              child: Text(
-                                'Mot de passe oublié?',
-                                style: TextStyle(color: Colors.blue),
-                                overflow: TextOverflow.ellipsis
-                              ),
+                            labelText: 'Confirmation de mot de passe',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                          ],
+                          ),
+                          keyboardType: TextInputType.emailAddress,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Veuillez confirmer votre mot de passe';
+                            }
+                            return null;
+                          },
                         ),
-                        SizedBox(height: 25),
+                        SizedBox(height: 30,),
                         SizedBox(
                           width: 300,
                           height: 55,
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(10)
                               ),
                               backgroundColor: Colors.blue,
                             ),
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                print('Nom: ${_emailController.text}');
-                                print('Email: ${_passwordController.text}');
+                                print('Nom: ${_nameController.text}');
+                                print('Email: ${_emailController.text}');
                               }
                             },
                             child: Text(
-                              'Se connecter',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                              ),
+                              'S\'inscrire',
+                              style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),
                             ),
                           ),
                         ),
                         SizedBox(height: 15),
-                        // La barre de séparation
                         Row(
                           children: <Widget> [
                             Expanded(
@@ -174,7 +193,7 @@ class _SignupState extends State<Signup> {
                                 endIndent: 10,
                               ),
                             ),
-                            Text("Ou se connecter avec",style: TextStyle(fontSize: 16),),
+                            Text("Ou s'inscrire avec",style: TextStyle(fontSize: 16),),
                             Expanded(
                               child: Divider(
                                 color: Colors.blue,
@@ -193,16 +212,15 @@ class _SignupState extends State<Signup> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              side: BorderSide(color: Colors.blue, width: 3),
+                              side: BorderSide(
+                                color: Colors.blue,
+                                width: 3,
+                              ),
                             ),
                             onPressed: () {},
                             label: Text(
                               'Google',
-                              style: TextStyle(
-                                color: Colors.blue,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold
-                              ),
+                              style: TextStyle(color: Colors.blue,fontSize: 20,fontWeight: FontWeight.bold),
                             ),
                             icon: Image.asset(
                               'assets/images/icons8-google-48.png',
@@ -211,27 +229,20 @@ class _SignupState extends State<Signup> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 20),
+                        SizedBox(height: 20,),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text('Vous n\'avez pas de compte ? '),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => Signinpage(),
-                                  ),
-                                );
-                              },
-                              child: Text(
-                                'S\'inscrire',
-                                style: TextStyle(color: Colors.blue),
+                              Text('Vous avez déjà un compte ? '),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => Signup()));
+                                },
+                                child: Text('Se connecter',style: TextStyle(color: Colors.blue),)
                               ),
-                            ),
                           ],
                         ),
+                        SizedBox(height: 20,),
                       ],
                     ),
                   ),
